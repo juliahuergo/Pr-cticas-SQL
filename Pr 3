@@ -1,0 +1,99 @@
+create table oficinas{
+    codOficina VARCHAR2(10),
+    direccion VARCHAR2(30),
+    provincia VARCHAR2(10)
+};
+
+create table vendedores(
+    NIFVendedor VARCHAR2(9),
+    nombreVendedor VARCHAR2(9),
+    oficinaVendedor VARCHAR2(20)
+);
+
+create table clientes(
+    NIFCliente VARCHAR2(9),
+    nombreCliente VARCHAR2(10)
+);
+
+create table modelos(
+    marca VARCHAR2(20),
+    modelo VARCHAR2(20),
+    precio INTEGER
+);
+
+create table ventas(
+    NIFVendedor VARCHAR2(9),
+    NIFCliente VARCHAR2(9),
+    marca VARCHAR2(20),
+    modelo VARCHAR2(20),
+    fechaVenta DATE,
+	importeVenta INTEGER
+);
+
+INSERT INTO oficinas VALUES('1111111', 'Paseo de Juan', 'Asturias');
+INSERT INTO oficinas VALUES('2222222', 'Paseo de Juan', 'Cartagena');
+INSERT INTO oficinas VALUES('3333333', 'Calle de Galicia', 'León');
+INSERT INTO oficinas VALUES('4444444', 'Av. de Galicia', 'Vigo');
+INSERT INTO oficinas VALUES('5555555', 'Marqués de Pidal', 'Lugo');
+INSERT INTO oficinas VALUES('6666666', 'Calle Covadonga', 'Jaén');
+
+INSERT INTO vendedores VALUES('78123548', 'Pepe', 'Gijón');
+INSERT INTO vendedores VALUES('83648356', 'Jose', 'Santander');
+INSERT INTO vendedores VALUES('90173477', 'Luis', 'Cataluña');
+INSERT INTO vendedores VALUES('23423456', 'Jimena', 'Bilbao');
+INSERT INTO vendedores VALUES('76543456', 'Pepa', 'Andalucía');
+INSERT INTO vendedores VALUES('35667856', 'Pablo', 'Madrid');
+
+
+INSERT INTO clientes VALUES('8347569', 'Fernanda');
+INSERT INTO clientes VALUES('7934579', 'Josefa');
+INSERT INTO clientes VALUES('1234549', 'Luisa');
+INSERT INTO clientes VALUES('9846500', 'María');
+INSERT INTO clientes VALUES('5345613', 'Paula');
+INSERT INTO clientes VALUES('9344765', 'Felipe');
+
+INSERT INTO modelos VALUES('Ford', 'Tyrant', 100000);
+INSERT INTO modelos VALUES('Ford', 'Beet', 10000);
+INSERT INTO modelos VALUES('Mercedes', 'Clase A', 35000);
+INSERT INTO modelos VALUES('Range Rover', 'SUV', 90000);
+INSERT INTO modelos VALUES('Fiat', '500', 50000);
+INSERT INTO modelos VALUES('Porsche', 'Macan', 100000);
+
+alter session set nls_date_format = 'DD-MM-YYYY';
+INSERT INTO ventas VALUES('78123548', '8347569', 'Ford', 'Tyrant', TO_DATE('26-08-2006'), 80000);
+INSERT INTO ventas VALUES('23423456', '1234549', 'Porsche', 'Macan', TO_DATE('30-08-2006'), 95000);
+INSERT INTO ventas VALUES('35667856', '9846500', 'Ford', 'Beet', TO_DATE('05-10-2018'), 9000);
+
+select count(*) as numero_oficinas from oficinas;
+
+SELECT provincia, COUNT(*) AS numero_oficinas
+FROM oficinas
+GROUP BY provincia;
+
+SELECT provincia, COUNT(*) AS numero_oficinas
+FROM oficinas
+GROUP BY provincia
+HAVING COUNT(*) > 1;
+
+select NIFVendedor, provincia from vendedores join oficinas on oficinas.provincia = vendedores.oficinaVendedor
+
+
+select oficinaVendedor, COUNT(*) as numero_vendedores from vendedores group by oficinaVendedor
+
+
+select sum(importeVenta) as importeTotal from ventas
+
+
+select ven.oficinaVendedor as oficina, sum(v.importeVenta) as total_importe from ventas v
+join vendedores ven on v.NIFVendedor = ven.NIFVendedor group by ven.oficinaVendedor
+
+
+select importeVenta from ventas where importeVenta > (select avg(importeVenta) from ventas);
+
+select ven.oficinaVendedor, v.marca, sum(v.importeVenta) as total_importe
+from ventas v join vendedores ven on v.NIFVendedor = ven.NIFVendedor
+group by ven.oficinaVendedor, v.marca
+
+
+
+select NIFCliente, marca from ventas 
